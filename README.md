@@ -13,6 +13,7 @@ A Virtual Instrument Playing Platform where users can play **Piano** three ocatv
 ---
 
 ## 🕹️Instructions
+-You can get a Quick look by going through the link - https://musicly-ashen.vercel.app/ else you can build it on your PC by:
 1. Clone/Open the Repo and open the `index.html` file in any browser
 2. Press the **Get Started** button
 3. Switch between your instrument by pressing the instrument page button located at bottom
