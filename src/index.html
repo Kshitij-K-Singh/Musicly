@@ -5,6 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="./output.css" rel="stylesheet" />
     <title>Musicly a Virtual Instrument Platform</title>
+    <style>
+      #rec-indicator {
+        width: 15px;
+        height: 15px;
+        background-color: red;
+        border-radius: 50%;
+        animation: pulse 1.5s infinite;
+        display: none;
+      }
+      @keyframes pulse {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+      #download-link.disabled {
+        pointer-events: none;
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      #mic-toggle {
+        user-select: none;
+      }
+    </style>
   </head>
   <body
     class="h-256 bg-no-repeat bg-gradient-to-b from-purple-600 via-pink-600 to-blue-600"
@@ -12,39 +41,45 @@
     <nav class="bg-neutral-400/35 backdrop-blur-lg rounded-b-4xl mx-auto h-24">
       <div class="container mx-auto flex justify-between items-center">
         <a href="index.html"
-          ><img src="./images/logo.png" width="256" alt="Logo"
+          ><img src="/public/images/logo.png" width="256" alt="Logo"
         /></a>
       </div>
     </nav>
     <div
       id="box"
-      class="px-20 py-10 mt-56 ml-auto mr-auto w-128 h-64 bg-neutral-400/35 backdrop-blur-lg rounded-4xl"
+      class="px-20 py-10 mt-56 ml-auto mr-auto mb-56 w-128 h-64 bg-neutral-400/35 backdrop-blur-lg rounded-4xl"
     >
       <h1 id="about" class="text-4xl font-bold text-white">
         Welcome to Musicly
       </h1>
-      <p id="about2" class="text-lg px-12 mt-4 text-white">
+      <p id="about2" class="text-lg px-12 mt-4 mb-4 ml-auto mr-auto text-white">
         A Virtual Instrument Platform
       </p>
-      <button
-        id="intro"
-        class="before:ease relative overflow-hidden border bg-neutral-400/25 h-12 w-40 ml-24 mt-8 rounded-xl font-bold backdrop-blur-2xl text-orange-950 shadow-2xl transition-all before:absolute before:top-1/2 before:h-0 before:w-64 before:origin-center before:-translate-x-20 before:rotate-45 before:bg-violet-600 before:duration-640 hover:text-white hover:shadow-indigo-600 hover:before:h-64 hover:before:-translate-y-32 hover:cursor-pointer"
-        onclick="document.getElementById('box').style.height='70vh'; 
-                 document.getElementById('box').style.width='60vw'; document.getElementById('box').style.transition='all 0.5s'; 
-                 document.getElementById('intro').style.display='block';this.style.display='none'; document.getElementById('about').innerHTML=''; 
-                 document.getElementById('about2').innerHTML=''; document.getElementById('about3').style.display='block'; document.getElementById('box').style.marginTop='10vh';
-                 document.getElementById('piano').style.display='block'; document.getElementById('piano').style.opacity='1'; document.getElementById('note-show').style.display='block'; document.getElementById('note-show').style.transition='all 0.5s';
-                 document.getElementById('keybind-show').style.display='block'; document.getElementById('keybind-show').style.transition='all 0.5s';
-                 document.getElementById('drum-page').style.display='block'; document.getElementById('drum-page').style.transition='all 0.5s';"
-      >
-        <span class="relative z-10">Get Started</span>
-      </button>
-      <p id="about3" class="text-4xl font-bold text-center text-white hidden">
-        Classic Piano
-      </p>
-      <div id="piano" class="ml-0.5 mt-16 hidden">
+      <div id="gsbtn" class="flex w-auto h-auto items-center mt-6 mb-6">
+        <button
+          id="intro"
+          class="before:ease relative overflow-hidden border bg-neutral-400/25 h-12 w-40 ml-auto mr-auto rounded-xl font-bold backdrop-blur-2xl text-orange-950 shadow-2xl transition-all before:absolute before:top-1/2 before:h-0 before:w-64 before:origin-center before:-translate-x-20 before:rotate-45 before:bg-violet-600 before:duration-640 hover:text-white hover:shadow-indigo-600 hover:before:h-64 hover:before:-translate-y-32 hover:cursor-pointer"
+          onclick="document.getElementById('box').style.height='70vh'; 
+                   document.getElementById('box').style.width='60vw'; document.getElementById('box').style.transition='all 0.5s'; 
+                   document.getElementById('intro').style.display='block'; this.style.display='none'; document.getElementById('about').style.display='none'; 
+                   document.getElementById('about2').style.display='none'; document.getElementById('about3').style.display='block'; document.getElementById('box').style.marginTop='10vh';
+                   document.getElementById('piano').style.display='block'; document.getElementById('piano').style.opacity='1'; document.getElementById('note-show').style.display='block'; document.getElementById('note-show').style.transition='all 0.5s';
+                   document.getElementById('keybind-show').style.display='block'; document.getElementById('keybind-show').style.transition='all 0.5s';
+                   document.getElementById('drum-page').style.display='block'; document.getElementById('drum-page').style.transition='all 0.5s';
+                   document.getElementById('gsbtn').style.display='none'; document.getElementById('recording-controls').style.display='flex'; "
+        >
+          <span class="relative z-10">Get Started</span>
+        </button>
+      </div>
+      <div id="piano" class="ml-auto mr-auto w-max h-auto relative hidden">
+        <p
+          id="about3"
+          class="text-4xl mt-4 mb-8 font-bold text-center text-white hidden"
+        >
+          Classic Piano
+        </p>
         <!-- White Keys -->
-        <div class="relative flex">
+        <div class="flex">
           <button
             class="white-key w-12 h-56 bg-white border border-grey-400 hover:bg-neutral-300 shadow-neutral-50 shadow-2xl"
             data-note="C4"
@@ -278,223 +313,193 @@
           </button>
         </div>
         <!-- Black Keys -->
-        <div class="relative flex -mt-56 ml-1">
+        <div class="relative flex -mt-56 z-10">
           <button
-            class="black-key w-8 h-36 absolute left-7 bg-black border border-grey-400 hover:bg-neutral-700"
+            class="black-key absolute left-8 w-8 h-36 bg-black border border-grey-400 hover:bg-neutral-700"
             data-note="Cs4"
           >
+            <span class="key-bind text-2xs block text-neutral-100">w</span>
             <span
               class="note text-2xs mt-2 pt-2 block text-neutral-100"
               style="white-space: pre-wrap"
               >C# 4</span
             >
-            <span class="key-bind text-2xs -mt-24 block text-neutral-100"
-              >w</span
-            >
           </button>
           <button
-            class="black-key w-8 h-36 absolute left-18.75 bg-black border border-grey-400 hover:bg-neutral-700"
+            class="black-key w-8 h-36 absolute left-20 bg-black border border-grey-400 hover:bg-neutral-700"
             data-note="Ds4"
           >
+            <span class="key-bind text-2xs block text-neutral-100">e</span>
             <span
               class="note text-2xs mt-2 pt-2 block text-neutral-100"
               style="white-space: pre-wrap"
               >D# 4</span
             >
-            <span class="key-bind text-2xs -mt-24 block text-neutral-100"
-              >e</span
-            >
           </button>
           <button
-            class="black-key w-8 h-36 absolute left-42 bg-black border border-grey-400 hover:bg-neutral-700"
+            class="black-key w-8 h-36 absolute left-44 bg-black border border-grey-400 hover:bg-neutral-700"
             data-note="Fs4"
           >
+            <span class="key-bind text-2xs block text-neutral-100">t</span>
             <span
               class="note text-2xs mt-2 pt-2 block text-neutral-100"
               style="white-space: pre-wrap"
               >F# 4</span
             >
-            <span class="key-bind text-2xs -mt-24 block text-neutral-100"
-              >t</span
-            >
           </button>
           <button
-            class="black-key w-8 h-36 absolute left-54 bg-black border border-grey-400 hover:bg-neutral-700"
+            class="black-key w-8 h-36 absolute left-56 bg-black border border-grey-400 hover:bg-neutral-700"
             data-note="Gs4"
           >
+            <span class="key-bind text-2xs block text-neutral-100">y</span>
             <span
               class="note text-2xs mt-2 pt-2 block text-neutral-100"
               style="white-space: pre-wrap"
               >G# 4</span
             >
-            <span class="key-bind text-2xs -mt-24 block text-neutral-100"
-              >y</span
-            >
           </button>
           <button
-            class="black-key w-8 h-36 absolute left-66 bg-black border border-grey-400 hover:bg-neutral-700"
+            class="black-key w-8 h-36 absolute left-68 bg-black border border-grey-400 hover:bg-neutral-700"
             data-note="As4"
           >
+            <span class="key-bind text-2xs block text-neutral-100">u</span>
             <span
               class="note text-2xs mt-2 pt-2 block text-neutral-100"
               style="white-space: pre-wrap"
               >A# 4</span
             >
-            <span class="key-bind text-2xs -mt-24 block text-neutral-100"
-              >u</span
-            >
           </button>
           <button
-            class="black-key w-8 h-36 absolute left-89 bg-black border border-grey-400 hover:bg-neutral-700"
+            class="black-key w-8 h-36 absolute left-92 bg-black border border-grey-400 hover:bg-neutral-700"
             data-note="Cs5"
           >
+            <span class="key-bind text-2xs block text-neutral-100">1</span>
             <span
               class="note text-2xs mt-2 pt-2 block text-neutral-100"
               style="white-space: pre-wrap"
               >C# 5</span
             >
-            <span class="key-bind text-2xs -mt-24 block text-neutral-100"
-              >1</span
-            >
           </button>
           <button
-            class="black-key w-8 h-36 absolute left-101 bg-black border border-grey-400 hover:bg-neutral-700"
+            class="black-key w-8 h-36 absolute left-104 bg-black border border-grey-400 hover:bg-neutral-700"
             data-note="Ds5"
           >
+            <span class="key-bind text-2xs block text-neutral-100">3</span>
             <span
               class="note text-2xs mt-2 pt-2 block text-neutral-100"
               style="white-space: pre-wrap"
               >D# 5</span
             >
-            <span class="key-bind text-2xs -mt-24 block text-neutral-100"
-              >3</span
-            >
           </button>
           <button
-            class="black-key w-8 h-36 absolute left-124.5 bg-black border border-grey-400 hover:bg-neutral-700"
+            class="black-key w-8 h-36 absolute left-128 bg-black border border-grey-400 hover:bg-neutral-700"
             data-note="Fs5"
           >
+            <span class="key-bind text-2xs block text-neutral-100">6</span>
             <span
               class="note text-2xs mt-2 pt-2 block text-neutral-100"
               style="white-space: pre-wrap"
               >F# 5</span
             >
-            <span class="key-bind text-2xs -mt-24 block text-neutral-100"
-              >6</span
-            >
           </button>
           <button
-            class="black-key w-8 h-36 absolute left-136 bg-black border border-grey-400 hover:bg-neutral-700"
+            class="black-key w-8 h-36 absolute left-140 bg-black border border-grey-400 hover:bg-neutral-700"
             data-note="Gs5"
           >
+            <span class="key-bind text-2xs block text-neutral-100">8</span>
             <span
               class="note text-2xs mt-2 pt-2 block text-neutral-100"
               style="white-space: pre-wrap"
               >G# 5</span
             >
-            <span class="key-bind text-2xs -mt-24 block text-neutral-100"
-              >8</span
-            >
           </button>
           <button
-            class="black-key w-8 h-36 absolute left-148 bg-black border border-grey-400 hover:bg-neutral-700"
+            class="black-key w-8 h-36 absolute left-152 bg-black border border-grey-400 hover:bg-neutral-700"
             data-note="As5"
           >
+            <span class="key-bind text-2xs block text-neutral-100">q</span>
             <span
               class="note text-2xs mt-2 pt-2 block text-neutral-100"
               style="white-space: pre-wrap"
               >A# 5</span
             >
-            <span class="key-bind text-2xs -mt-24 block text-neutral-100"
-              >q</span
-            >
           </button>
           <button
-            class="black-key w-8 h-36 absolute left-171.75 bg-black border border-grey-400 hover:bg-neutral-700"
+            class="black-key w-8 h-36 absolute left-176 bg-black border border-grey-400 hover:bg-neutral-700"
             data-note="Cs6"
           >
+            <span class="key-bind text-2xs block text-neutral-100">c</span>
             <span
               class="note text-2xs mt-2 pt-2 block text-neutral-100"
               style="white-space: pre-wrap"
               >C# 6</span
             >
-            <span class="key-bind text-2xs -mt-24 block text-neutral-100"
-              >c</span
-            >
           </button>
           <button
-            class="black-key w-8 h-36 absolute left-183.5 bg-black border border-grey-400 hover:bg-neutral-700"
+            class="black-key w-8 h-36 absolute left-188 bg-black border border-grey-400 hover:bg-neutral-700"
             data-note="Ds6"
           >
+            <span class="key-bind text-2xs block text-neutral-100">b</span>
             <span
               class="note text-2xs mt-2 pt-2 block text-neutral-100"
               style="white-space: pre-wrap"
               >D# 6</span
             >
-            <span class="key-bind text-2xs -mt-24 block text-neutral-100"
-              >b</span
-            >
           </button>
           <button
-            class="black-key w-8 h-36 absolute left-207.25 bg-black border border-grey-400 hover:bg-neutral-700"
+            class="black-key w-8 h-36 absolute left-212 bg-black border border-grey-400 hover:bg-neutral-700"
             data-note="Fs6"
           >
+            <span class="key-bind text-2xs block text-neutral-100">,</span>
             <span
               class="note text-2xs mt-2 pt-2 block text-neutral-100"
               style="white-space: pre-wrap"
               >F# 6</span
             >
-            <span class="key-bind text-2xs -mt-24 block text-neutral-100"
-              >,</span
-            >
           </button>
           <button
-            class="black-key w-8 h-36 absolute left-219 bg-black border border-grey-400 hover:bg-neutral-700"
+            class="black-key w-8 h-36 absolute left-224 bg-black border border-grey-400 hover:bg-neutral-700"
             data-note="Gs6"
           >
+            <span class="key-bind text-2xs block text-neutral-100">k</span>
             <span
               class="note text-2xs mt-2 pt-2 block text-neutral-100"
               style="white-space: pre-wrap"
               >G# 6</span
             >
-            <span class="key-bind text-2xs -mt-24 block text-neutral-100"
-              >k</span
-            >
           </button>
           <button
-            class="black-key w-8 h-36 absolute left-230.5 bg-black border border-grey-400 hover:bg-neutral-700"
+            class="black-key w-8 h-36 absolute left-236 bg-black border border-grey-400 hover:bg-neutral-700"
             data-note="As6"
           >
+            <span class="key-bind text-2xs block text-neutral-100">i</span>
             <span
               class="note text-2xs mt-2 pt-2 block text-neutral-100"
               style="white-space: pre-wrap"
               >A# 6</span
             >
-            <span class="key-bind text-2xs -mt-24 block text-neutral-100"
-              >i</span
-            >
           </button>
         </div>
         <button
           id="note-show"
-          class="hidden before:ease relative overflow-hidden border bg-neutral-400/25 h-12 w-40 ml-24 mt-72 rounded-xl font-bold backdrop-blur-2xl text-orange-950 shadow-2xl transition-all before:absolute before:top-1/2 before:h-0 before:w-64 before:origin-center before:-translate-x-20 before:rotate-45 before:bg-violet-600 before:duration-640 hover:text-white hover:shadow-violet-600 hover:before:h-64 hover:before:-translate-y-32 hover:cursor-pointer"
+          class="hidden before:ease relative overflow-hidden border bg-neutral-400/25 h-12 w-40 mt-64 rounded-xl font-bold backdrop-blur-2xl text-orange-950 shadow-2xl transition-all before:absolute before:top-1/2 before:h-0 before:w-64 before:origin-center before:-translate-x-20 before:rotate-45 before:bg-violet-600 before:duration-640 hover:text-white hover:shadow-violet-600 hover:before:h-64 hover:before:-translate-y-32 hover:cursor-pointer"
         >
-          <span class="relative z-10">Hide Note</span>
+          <span id="note-show-txt" class="relative z-10">Hide Note</span>
         </button>
         <button
           id="keybind-show"
-          class="hidden before:ease relative overflow-hidden border bg-neutral-400/25 h-12 w-40 ml-172 -mt-12 rounded-xl font-bold backdrop-blur-2xl text-orange-950 shadow-2xl transition-all before:absolute before:top-1/2 before:h-0 before:w-64 before:origin-center before:-translate-x-20 before:rotate-45 before:bg-indigo-600 before:duration-640 hover:text-white hover:shadow-indigo-600 hover:before:h-64 hover:before:-translate-y-32 hover:cursor-pointer"
+          class="hidden before:ease relative overflow-hidden border bg-neutral-400/25 h-12 w-40 ml-56 -mt-12 rounded-xl font-bold backdrop-blur-2xl text-orange-950 shadow-2xl transition-all before:absolute before:top-1/2 before:h-0 before:w-64 before:origin-center before:-translate-x-20 before:rotate-45 before:bg-indigo-600 before:duration-640 hover:text-white hover:shadow-indigo-600 hover:before:h-64 hover:before:-translate-y-32 hover:cursor-pointer"
         >
-          <span class="relative z-10">Hide Keybind</span>
+          <span id="kb-txt" class="relative z-10">Hide Keybind</span>
         </button>
         <button
           id="drum-page"
-          class="hidden items-center relative h-[50px] w-40 mt-12 ml-200 overflow-hidden rounded-2xl border-blue-900 bg-pink-200/20 backdrop-blur-2xl px-3 text-cyan-900 font-bold shadow-2xl transition-all before:absolute before:bottom-0 before:left-0 before:top-0 before:z-0 before:h-full before:w-0 before:bg-cyan-400 before:transition-all before:duration-500 hover:text-white hover:shadow-cyan-400 hover:before:left-0 hover:before:w-full hover:cursor-pointer"
+          class="hidden items-center relative h-[50px] w-40 mt-32 left-200 overflow-hidden rounded-2xl border-blue-900 bg-pink-200/20 backdrop-blur-2xl px-3 text-cyan-900 font-bold shadow-2xl transition-all before:absolute before:bottom-0 before:left-0 before:top-0 before:z-0 before:h-full before:w-0 before:bg-cyan-400 before:transition-all before:duration-500 hover:text-white hover:shadow-cyan-400 hover:before:left-0 hover:before:w-full hover:cursor-pointer"
         >
           <span class="relative top-0.5 z-10">Drum Page</span>
           <span
             class="relative ml-2 z-20 bottom-0.5 text-4xl align-middle text-white"
-            >></span
+            >&gt;</span
           >
         </button>
       </div>
@@ -519,7 +524,7 @@
         </div>
         <div class="items-center gap-4 mt-8">
           <img
-            src="./images/drumkit.png"
+            src="/public/images/drumkit.png"
             alt="Drum Kit"
             class="mx-auto w-122.4 h-81.6"
           />
@@ -594,9 +599,43 @@
           <span class="relative top-0.5 z-10">Piano Page</span>
           <span
             class="relative ml-2 z-20 bottom-0.5 text-4xl align-middle text-white"
-            ><</span
+            >&lt;</span
           >
         </button>
+      </div>
+      <div
+        id="recording-controls"
+        class="absolute bottom-4 left-1/2 -translate-x-1/2 w-1/2 px-4 top-130 items-center justify-center gap-4 hidden"
+      >
+        <div class="flex items-center gap-2">
+          <div id="rec-indicator"></div>
+          <div id="timer" class="text-white font-mono text-lg">00:00</div>
+        </div>
+        <button
+          id="record-btn"
+          class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+        >
+          Record
+        </button>
+        <button
+          id="stop-btn"
+          class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+          disabled
+        >
+          Stop
+        </button>
+        <a
+          id="download-link"
+          download="musicly-recording.webm"
+          class="disabled bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors text-center"
+          >Download</a
+        >
+        <div class="flex items-center gap-2 text-white ml-4">
+          <input type="checkbox" id="mic-toggle" class="w-4 h-4" />
+          <label id="mic-toggle" for="mic-toggle"
+            ><strong>Record with Microphone</strong></label
+          >
+        </div>
       </div>
     </div>
     <script src="script.js"></script>
