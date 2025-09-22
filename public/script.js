@@ -168,11 +168,11 @@ function playSoundAndRecord(soundUrl) {
 }
 
 function playDrumSound(drum) {
-  playSoundAndRecord(`/public/sounds/${drum}.wav`);
+  playSoundAndRecord(`sounds/${drum}.wav`);
 }
 
 function playNote(note) {
-  playSoundAndRecord(`/public/sounds/${note}.ogg`);
+  playSoundAndRecord(`sounds/${note}.ogg`);
 }
 
 function drumkey(drum) {
